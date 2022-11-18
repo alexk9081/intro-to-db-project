@@ -1,5 +1,8 @@
 package project2;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -33,6 +36,22 @@ import java.util.Scanner;
 
 public class ProjectInterface {
 	static Scanner in = new Scanner(System.in);
+	
+	Connection rdsConnection;
+	
+	private static Connection getRemoteConnection() throws SQLException {
+		System.out.println("Database username: ");
+		String userName = in.nextLine();
+		System.out.println("Database password: ");
+		String password = in.nextLine();
+		
+		String hostname = "cisvm-oracle.unfcsd.unf.edu";
+		String port = "1521";
+
+		Connection con = DriverManager.getConnection("jdbc:oracle:thin:@" + hostname + ":" + port + ":orcl", userName, password);
+
+		return con;
+	}
 	
 	private static void createTables() {
 		
@@ -178,49 +197,56 @@ public class ProjectInterface {
 	}
 	
 	public static void main(String[] args) {
-		String userInput = "";
-		
-		while(!userInput.equals("q")) {
-			System.out.println("Menu: (e) Enter Data | (s) Instructor Course Sections | (d) Department Courses | (g) Grade Report | (q) Quit");
-			do {
-				userInput = in.nextLine();				
-			}
-			while(userInput.equals(""));
+		try {
+			getRemoteConnection();
 			
-			switch (userInput) {
-				case "create":
-					System.out.println("You better know what you're doing...");
-					createTables();
-					return;
+			String userInput = "";
+			
+			while(!userInput.equals("q")) {
+				System.out.println("Menu: (e) Enter Data | (s) Instructor Course Sections | (d) Department Courses | (g) Grade Report | (q) Quit");
+				do {
+					userInput = in.nextLine();				
+				}
+				while(userInput.equals(""));
 				
-				case "e":
-					System.out.println("Entering Data");
-					addData();
-					break;
-	
-				case "s":
-					System.out.println("Getting Instructor Course Section");
-					getInstructorCourseSections();
-					break;
+				switch (userInput) {
+					case "create":
+						System.out.println("You better know what you're doing...");
+						createTables();
+						return;
 					
-				case "d":
-					System.out.println("Getting Department Courses");
-					getDepartmentCourses();
-					break;
+					case "e":
+						System.out.println("Entering Data");
+						addData();
+						break;
+		
+					case "s":
+						System.out.println("Getting Instructor Course Section");
+						getInstructorCourseSections();
+						break;
+						
+					case "d":
+						System.out.println("Getting Department Courses");
+						getDepartmentCourses();
+						break;
+						
+					case "g":
+						System.out.println("Getting Student Grade Report");
+						getGradeReport();
+						break;
+						
+					case "q":
+						System.out.println("Quitting...");
+						break;
 					
-				case "g":
-					System.out.println("Getting Student Grade Report");
-					getGradeReport();
-					break;
-					
-				case "q":
-					System.out.println("Quitting...");
-					break;
-				
-				default:
-					System.out.println("Invalid Menu Input: " + userInput);
-					break;
+					default:
+						System.out.println("Invalid Menu Input: " + userInput);
+						break;
+				}
 			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
 		}
 		
 		in.close();
