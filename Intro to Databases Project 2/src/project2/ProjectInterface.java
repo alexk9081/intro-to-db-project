@@ -2,44 +2,29 @@ package project2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-/*
-	Users should be able to perform the following tasks using the front-end:
-	
-	Add a student, department, course, instructor, and course section.
-	Add students to a given course/section.
-	Given a student's Nnumber generate their grade report. 
-		Grade report should include student information, course/section, letter grade, grade point for each grade, and the grade point average (GPA) 
-			(you can find how to calculate GPA here).
-	Given a department name or code find the courses offered. 
-	Given an instructor's Nnumber list all the course sections they have taught.
-	Add a grade to a given student for a given course/section.
+/**
+ * 
+ * @author Alex, Juan, and Richfield
+ *
  */
-
-/*
-	Normalize the relations developed in Part 1 if applicable and update the related diagrams developed in Part 1 accordingly.
-	Implement the back-end: Implement necessary tables based on your normalized relational schema. For each table created, you should include:
-		name (be descriptive) of each attribute
-		type of each attribute (consider the storage space implications of each choice)
-		attribute constraints (e.g.,NOT NULL, uniqueness, default value)
-		primary key
-		foreign keys (all of them)
-		referential integrity constraints
-		CHECK clauses (if needed)
-		short comment linking the table creation command to the entity name of your ER diagram (use#character to comment)
-	Implement the front-end that can perform the tasks described above under requirements and interact with the back-end.The front-end can be a command-line interface or a graphical user interface (GUI). Extra credit will be given to developing a GUI. 
-	The database system should be easy to navigate and use.
- */
-
 public class ProjectInterface {
 	static Scanner in = new Scanner(System.in);
+	static Connection rdsConnection;
 	
-	Connection rdsConnection;
-	
-	private static Connection getRemoteConnection() throws SQLException {
+	/**
+	 * Gets username and password from user and attempts to connect to the UNF oracle sql server.
+	 * On success, the connection to the database is stored in the rdsConnection variable which can be used across the class
+	 * 
+	 * @throws SQLException on failure such as incorrect credentials
+	 */
+	private static void getRemoteDatabaseConnection() throws SQLException {
 		System.out.println("Database username: ");
 		String userName = in.nextLine();
 		System.out.println("Database password: ");
@@ -48,15 +33,19 @@ public class ProjectInterface {
 		String hostname = "cisvm-oracle.unfcsd.unf.edu";
 		String port = "1521";
 
-		Connection con = DriverManager.getConnection("jdbc:oracle:thin:@" + hostname + ":" + port + ":orcl", userName, password);
-
-		return con;
+		rdsConnection = DriverManager.getConnection("jdbc:oracle:thin:@" + hostname + ":" + port + ":orcl", userName, password);
 	}
 	
+	/**
+	 * Developer method to initialize databases
+	 */
 	private static void createTables() {
-		
+		//TODO implement me
 	}
 
+	/**
+	 * Forks user off into the specific add data methods based on user input
+	 */
 	private static void addData() {
 		String userInput = "";
 		
@@ -165,6 +154,37 @@ public class ProjectInterface {
 		
 		System.out.println("Getting grade report for student n" + studentNnumber);
 		//TODO Implement me
+		
+		
+		try {
+			PreparedStatement statement = rdsConnection.prepareStatement("SELECT * FROM STUDENTS");
+			ResultSet res = statement.executeQuery();
+	
+			ResultSetMetaData metadata = res.getMetaData();
+			int columnCount = metadata.getColumnCount();
+			
+			// Print column names
+			for (int i = 1; i <= columnCount; i++) {
+				System.out.print(metadata.getColumnName(i));
+				if (i != columnCount) {
+					System.out.print("| ");
+				} else {
+					System.out.println();
+				}
+			}
+			
+			// Print results
+			while (res.next()) {
+				String row = "";
+				for (int i = 1; i <= columnCount; i++) {
+					row += res.getString(i) + ", ";
+				}
+				System.out.println(row);
+			}
+		}
+		catch (SQLException e) {
+			// TODO: handle exception
+		}
 	}
 	
 	private static void getDepartmentCourses() {
@@ -196,12 +216,17 @@ public class ProjectInterface {
 		//TODO Implement me
 	}
 	
+	/**
+	 * Gets database connection then allows user to fork into their desired method.
+	 * All GET methods are stand-alone while ADD methods are further forked using the addData() method
+	 * 
+	 */
 	public static void main(String[] args) {
 		try {
-			getRemoteConnection();
+			getRemoteDatabaseConnection();
+			
 			
 			String userInput = "";
-			
 			while(!userInput.equals("q")) {
 				System.out.println("Menu: (e) Enter Data | (s) Instructor Course Sections | (d) Department Courses | (g) Grade Report | (q) Quit");
 				do {
