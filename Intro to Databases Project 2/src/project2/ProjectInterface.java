@@ -1,5 +1,6 @@
 package project2;
 
+import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -48,8 +49,28 @@ public class ProjectInterface extends JFrame {
      * Developer method to initialize databases
      */
     private static void createTables() {
-        // TODO implement me
-    }
+        // method used to ask user if they want to create table.
+        try(
+        Statement stmt = rdsConnection.createStatement();
+     ) {
+
+        System.out.print("enter new database table");
+         String sql = getString();
+         /* example of how input should be
+         CREATE TABLE REGISTRATION " +
+                  "(id INTEGER not NULL, " +
+                  " first VARCHAR(255), " + 
+                  " last VARCHAR(255), " + 
+                  " age INTEGER, " + 
+                  " PRIMARY KEY ( id ))"; */
+
+        stmt.executeUpdate(sql);
+        System.out.println("Created table in given database...");   	  
+     } catch (SQLException e) {
+        e.printStackTrace();
+     } 
+  }
+
 
     /**
      * Forks user off into the specific add data methods based on user input
@@ -413,9 +434,10 @@ public class ProjectInterface extends JFrame {
     }
 
     private static void addGrade() {
-        // TODO Implement me
+        //TODO
+        
     }
-
+    
     private static void getGradeReport() {
         int studentNnumber = -1;
 
@@ -491,7 +513,7 @@ public class ProjectInterface extends JFrame {
       int c = 1;
   
       while (c != 0) {
-        // read in vendor code
+        // read in code
         System.out.print("Code (enter 0 for exit): ");
         c = getInt();
         pstmt.setInt(1, c);
