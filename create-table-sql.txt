@@ -13,7 +13,7 @@ CREATE TABLE COURSE (
     description     VARCHAR(200),
     course_level    INT,
     course_name     VARCHAR(30),
-    semseter_hours  FLOAT,     
+    semester_hours  FLOAT,     
     department      VARCHAR(4),
     PRIMARY KEY (course_number),
     FOREIGN KEY (department) REFERENCES DEPARTMENT(code)
