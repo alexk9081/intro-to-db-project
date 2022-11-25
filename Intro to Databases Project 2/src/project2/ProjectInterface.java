@@ -472,7 +472,44 @@ public class ProjectInterface extends JFrame {
     private static void getDepartmentCourses() {
         int departmentCode;
         String departmentName;
-        // TODO Implement me
+        DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+        
+        String q = "select c.course_name, c.course_number"+
+        "from course c"+
+        "inner join department d"+
+        "on c.department = d.code"+ 
+        "where d.code = ?";
+        getRemoteDatabaseConnection();
+        
+        PreparedStatement pstmt =
+        rdsConnection.prepareStatement (q);
+  
+      System.out.println("\nEnter department code, \nThen course name " +
+                         "and course number " +
+                         "will be displayed\n");
+  
+      int c = 1;
+  
+      while (c != 0) {
+        // read in vendor code
+        System.out.print("Code (enter 0 for exit): ");
+        c = getInt();
+        pstmt.setInt(1, c);
+  
+        ResultSet rset = pstmt.executeQuery();
+  
+        System.out.println("\n");
+  
+        // Iterate through the result and print the employee names
+        while (rset.next ()) {
+          String coursename = rset.getString("c.course_name");
+          String coursenumber = rset.getString("c.course_Number");        
+          System.out.println (coursename + ":" + coursenumber);
+        } // while rset
+  
+        System.out.println("\n");
+      } // while c
+  
     }
 
     private static void getInstructorCourseSections() {
