@@ -70,7 +70,7 @@ CREATE TABLE SECTION (
     course          VARCHAR(7) NOT NULL,
     section_year    INT             CHECK(section_year >= 1969) NOT NULL,
     semester        VARCHAR(8) NOT NULL,
-    instructor      int NOT,
+    instructor      int,
     PRIMARY KEY (section_number, course, section_year, semester),
     FOREIGN KEY (instructor) REFERENCES INSTRUCTOR(n_number) 
         ON DELETE SET NULL,
