@@ -1,5 +1,5 @@
 CREATE TABLE DEPARTMENT ( 
-    code                VARCHAR(4),
+    code                VARCHAR(4) NOT NULL,
     department_name     VARCHAR(30),
     college             VARCHAR(50),
     office_number       INT         CHECK(office_number >= 0 AND office_number <= 9999),
@@ -9,7 +9,7 @@ CREATE TABLE DEPARTMENT (
 );
 
 CREATE TABLE COURSE ( 
-    course_number   VARCHAR(7),
+    course_number   VARCHAR(7) NOT NULL,
     description     VARCHAR(200),
     course_level    INT,
     course_name     VARCHAR(30),
@@ -21,7 +21,7 @@ CREATE TABLE COURSE (
 );
 
 CREATE TABLE STUDENT ( 
-    n_number            INT             CHECK(n_number >= 0 AND n_number <= 99999999), 
+    n_number            INT             CHECK(n_number >= 0 AND n_number <= 99999999) NOT NULL, 
     degree              VARCHAR(15), 
     sex                 VARCHAR(6), 
     birthdate           DATE, 
@@ -51,7 +51,7 @@ CREATE TABLE STUDENT (
 );
 
 CREATE TABLE INSTRUCTOR ( 
-    n_number            INT             CHECK(n_number >= 0 AND n_number <= 99999999), 
+    n_number            INT             CHECK(n_number >= 0 AND n_number <= 99999999) NOT NULL, 
     ssn                 INT             CHECK(ssn >= 0 AND ssn <= 999999999), 
     instructor_name     VARCHAR(45),
     age                 int             CHECK(age >= 16 AND age <= 150),
@@ -66,11 +66,11 @@ CREATE TABLE INSTRUCTOR (
 );
 
 CREATE TABLE SECTION ( 
-    section_number  INT,
-    course          VARCHAR(7),
-    section_year    INT             CHECK(section_year >= 1969),
-    semester        VARCHAR(8),
-    instructor      int,
+    section_number  INT NOT NULL,
+    course          VARCHAR(7) NOT NULL,
+    section_year    INT             CHECK(section_year >= 1969) NOT NULL,
+    semester        VARCHAR(8) NOT NULL,
+    instructor      int NOT,
     PRIMARY KEY (section_number, course, section_year, semester),
     FOREIGN KEY (instructor) REFERENCES INSTRUCTOR(n_number) 
         ON DELETE SET NULL,
@@ -79,9 +79,9 @@ CREATE TABLE SECTION (
 );
 
 CREATE TABLE ENROLLED_IN ( 
-    student         INT,
-    course          VARCHAR(7),
-    section         INT,
+    student         INT NOT NULL,
+    course          VARCHAR(7) NOT NULL,
+    section         INT NOT NULL,
     section_year    INT             CHECK(section_year >= 1969),
     semester        VARCHAR(8),
     grade           VARCHAR(2),
