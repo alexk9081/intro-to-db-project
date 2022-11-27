@@ -41,7 +41,8 @@ public class ProjectInterface extends JFrame {
         String hostname = "cisvm-oracle.unfcsd.unf.edu";
         String port = "1521";
 
-        Connection rdsConnection = DriverManager.getConnection("jdbc:oracle:thin:@" + hostname + ":" + port + ":orcl",
+        /* Connection */ rdsConnection = DriverManager.getConnection(
+                "jdbc:oracle:thin:@" + hostname + ":" + port + ":orcl",
                 userName, password);
     }
 
@@ -50,27 +51,27 @@ public class ProjectInterface extends JFrame {
      */
     private static void createTables() {
         // method used to ask user if they want to create table.
-        try(
-        Statement stmt = rdsConnection.createStatement();
-     ) {
+        try (
+                Statement stmt = rdsConnection.createStatement();) {
 
-        System.out.print("enter new database table");
-         String sql = getString();
-         /* example of how input should be
-         CREATE TABLE REGISTRATION " +
-                  "(id INTEGER not NULL, " +
-                  " first VARCHAR(255), " + 
-                  " last VARCHAR(255), " + 
-                  " age INTEGER, " + 
-                  " PRIMARY KEY ( id ))"; */
+            System.out.print("enter new database table");
+            String sql = getString();
+            /*
+             * example of how input should be
+             * CREATE TABLE REGISTRATION " +
+             * "(id INTEGER not NULL, " +
+             * " first VARCHAR(255), " +
+             * " last VARCHAR(255), " +
+             * " age INTEGER, " +
+             * " PRIMARY KEY ( id ))";
+             */
 
-        stmt.executeUpdate(sql);
-        System.out.println("Created table in given database...");   	  
-     } catch (SQLException e) {
-        e.printStackTrace();
-     } 
-  }
-
+            stmt.executeUpdate(sql);
+            System.out.println("Created table in given database...");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Forks user off into the specific add data methods based on user input
@@ -243,7 +244,7 @@ public class ProjectInterface extends JFrame {
                     "or enter any other number for another insert: ");
             done = getInt();
         } // while done
-        rdsConnection.close();
+          // rdsConnection.close();
     }
 
     private static void addDepartment() throws SQLException {
@@ -276,7 +277,7 @@ public class ProjectInterface extends JFrame {
                     "or enter any other number for another insert: ");
             done = getInt();
         } // while done
-        rdsConnection.close();
+          // rdsConnection.close();
     }
 
     private static void addInstructor() throws SQLException {
@@ -320,10 +321,11 @@ public class ProjectInterface extends JFrame {
                     "or enter any other number for another insert: ");
             done = getInt();
         } // while done
-        rdsConnection.close();
+          // rdsConnection.close();
     }
 
     private static void addCourse() throws SQLException {
+
         PreparedStatement pstmt = rdsConnection.prepareStatement(
                 "INSERT INTO COURSE(course_number, description, course_level, course_name, semester_hours, department) "
                         +
@@ -357,7 +359,7 @@ public class ProjectInterface extends JFrame {
                     "or enter any other number for another insert: ");
             done = getInt();
         } // while done
-        rdsConnection.close();
+          // rdsConnection.close();
     }
 
     private static void addSection() throws SQLException {
@@ -391,7 +393,7 @@ public class ProjectInterface extends JFrame {
                     "or enter any other number for another insert: ");
             done = getInt();
         } // while done
-        rdsConnection.close();
+          // rdsConnection.close();
 
     }
 
@@ -429,15 +431,15 @@ public class ProjectInterface extends JFrame {
                     "or enter any other number for another insert: ");
             done = getInt();
         } // while done
-        rdsConnection.close();
+          // rdsConnection.close();
 
     }
 
     private static void addGrade() {
-        //TODO
-        
+        // TODO
+
     }
-    
+
     private static void getGradeReport() {
         int studentNnumber = -1;
 
@@ -491,56 +493,64 @@ public class ProjectInterface extends JFrame {
         }
     }
 
-    private static void getDepartmentCourses() {
+    private static void getDepartmentCourses() throws SQLException {
         int departmentCode;
         String departmentName;
         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        
-        String q = "select c.course_name, c.course_number"+
-        "from course c"+
-        "inner join department d"+
-        "on c.department = d.code"+ 
-        "where d.code = ?";
-        getRemoteDatabaseConnection();
-        
-        PreparedStatement pstmt =
-        rdsConnection.prepareStatement (q);
-  
-      System.out.println("\nEnter department code, \nThen course name " +
-                         "and course number " +
-                         "will be displayed\n");
-  
-      int c = 1;
-  
-      while (c != 0) {
+
+        String q = "select c.course_name, c.course_number " +
+                "from course c " +
+                "inner join department d " +
+                "on c.department = d.code " +
+                "where d.code = ?";
+
+        PreparedStatement pstmt = rdsConnection.prepareStatement(q);
+
+        System.out.println("\nEnter department code, \nThen course name " +
+                "and course number " +
+                "will be displayed\n");
+
+        String c = "";
+
         // read in code
-        System.out.print("Code (enter 0 for exit): ");
-        c = getInt();
-        pstmt.setInt(1, c);
-  
-        ResultSet rset = pstmt.executeQuery();
-  
+        while (c != "q") {
+            try {
+                System.out.print("Code (enter q for exit): ");
+                c = getString();
+            } catch (InputMismatchException e) {
+
+                if (getString() == "q") {
+                    System.out.println("Exiting...");
+                    return;
+                }
+                ;
+                System.out.println("Invalid number");
+            }
+
+            pstmt.setString(1, c);
+
+            ResultSet rset = pstmt.executeQuery();
+
+            System.out.println("\n");
+
+            // Iterate through the result and print the employee names
+            while (rset.next()) {
+                String coursename = rset.getString("course_name");
+                String coursenumber = rset.getString("course_Number");
+                System.out.println(coursename + ":" + coursenumber);
+            } // while rset
+        }
         System.out.println("\n");
-  
-        // Iterate through the result and print the employee names
-        while (rset.next ()) {
-          String coursename = rset.getString("c.course_name");
-          String coursenumber = rset.getString("c.course_Number");        
-          System.out.println (coursename + ":" + coursenumber);
-        } // while rset
-  
-        System.out.println("\n");
-      } // while c
-  
+        // while c
+
     }
 
-    private static void getInstructorCourseSections() {
+    private static void getInstructorCourseSections() throws SQLException {
         int instructorNnumber = -1;
 
         // Get Input
         while (instructorNnumber < 0) {
             System.out.println("Enter Instructor N Number or (q) Exit: ");
-
             try {
                 instructorNnumber = in.nextInt();
             } catch (InputMismatchException e) {
@@ -556,6 +566,28 @@ public class ProjectInterface extends JFrame {
 
         System.out.println("Getting course sections for instructor n" + instructorNnumber);
         // TODO Implement me
+        while (!in.nextLine().equals("q")) {
+            String q = "select * from s.SECTION " +
+                    "inner join i.INSTRUCTOR " +
+                    "on s.instructor = i.n_number " +
+                    "where i.n_number = " + instructorNnumber;
+            Statement stmt = rdsConnection.createStatement();
+            ResultSet rset = stmt.executeQuery(q);
+
+            System.out.println("\n");
+
+            while (rset.next()) {
+                int section = rset.getInt("section_number");
+                String course = rset.getString("course");
+                int section_year = rset.getInt("section_year");
+                String semester = rset.getString("semester");
+                int instructor = rset.getInt("instructor");
+                System.out.println(section + ":" + course + ":" +
+                        section_year + ":" + semester + ":" + instructor);
+            } // while rset
+
+            System.out.println("\n");
+        }
     }
 
     /**
@@ -566,13 +598,15 @@ public class ProjectInterface extends JFrame {
      */
     public static void main(String[] args) {
         // create gui window
-        ProjectInterface window = new ProjectInterface();
-
-        window.setSize(500, 500);
-        window.setVisible(true);
-        window.setTitle("UNF");
-        // add swing obj here
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        /*
+         * ProjectInterface window = new ProjectInterface();
+         * 
+         * window.setSize(500, 500);
+         * window.setVisible(true);
+         * window.setTitle("UNF");
+         * // add swing obj here
+         * window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         */
 
         try {
             getRemoteDatabaseConnection();
