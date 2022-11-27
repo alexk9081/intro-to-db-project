@@ -514,18 +514,12 @@ public class ProjectInterface extends JFrame {
 
         // read in code
         while (c != "q") {
-            try {
-                System.out.print("Code (enter q for exit): ");
-                c = getString();
-            } catch (InputMismatchException e) {
-
-                if (getString() == "q") {
-                    System.out.println("Exiting...");
-                    return;
-                }
-                ;
-                System.out.println("Invalid number");
-            }
+            System.out.print("Code (enter q for exit): ");
+            c = getString();
+            if (c.equals("q")){
+                System.out.println("Exiting...");
+                return;
+            };
 
             pstmt.setString(1, c);
 
