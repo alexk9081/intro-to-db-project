@@ -436,7 +436,41 @@ public class ProjectInterface extends JFrame {
     }
 
     private static void addGrade() {
-        // TODO
+         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+        int grade;
+        String course;
+        int section;
+        int student;
+
+        int done = 1;
+        // read in code
+        while (done != 0) {
+                System.out.print("Enter student number: ");
+                student = getInt();
+                System.out.print("Enter grade: ");
+                grade = getInt();
+                System.out.print("Enter course: ");
+                course = getString();
+                System.out.print("Enter section: ");
+                section = getInt();
+                String q = "update ENROLLED_IN " + 
+                            "set grade = " + grade +
+                            "where course = " + course + " or section = " + section + " and student = " + student;
+
+        PreparedStatement pstmt = rdsConnection.prepareStatement(q);
+
+        int NumRows = pstmt.executeUpdate();
+            System.out.println("\n" + NumRows + " row(s) inserted");
+
+
+            ResultSet rset = pstmt.executeQuery();
+
+            System.out.println("\nHit 0 for exit, " +
+            "or enter any other number for another insert: ");
+                done = getInt();
+            } 
+            
+            System.out.println("\n");
 
     }
 
