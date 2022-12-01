@@ -513,9 +513,13 @@ public class ProjectInterface extends JFrame {
         ResultSet rset = stmt.executeQuery(q);
 
         System.out.println("\n");
-
+        
         while (rset.next()) {
-            String studentName = rset.getString("FIRST_NAME")  + " " + rset.getString("MIDDLE_INITIAL") + " " + rset.getString("LAST_NAME");
+        	String mIString = rset.getString("MIDDLE_INITIAL");
+        	if (mIString == null || mIString.equals("null")) {
+        		mIString = "";
+        	}
+            String studentName = rset.getString("FIRST_NAME")  + " " + mIString + " " + rset.getString("LAST_NAME");
             int nNumber = rset.getInt("N_NUMBER");
             String degree = rset.getString("DEGREE");
             String sex = rset.getString("SEX");
