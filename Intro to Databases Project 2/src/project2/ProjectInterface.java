@@ -1,12 +1,8 @@
 package project2;
 
 import java.sql.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import javax.swing.*;
@@ -133,8 +129,6 @@ public class ProjectInterface extends JFrame {
                     break;
             }
         }
-
-        // TODO Implement me
     }
 
     // get string method re-usable
@@ -174,8 +168,25 @@ public class ProjectInterface extends JFrame {
             String degree = getString();
             System.out.println("\nEnter sex: ");
             String sex = getString();
-            System.out.println("\nEnter birth date: ");
-            int birthdate = getInt();
+            
+            System.out.println("\nEnter birth date year: "); 
+            int birthYear = getInt();
+            System.out.println("\nEnter birth date month number: ");
+            int birthMonth = getInt();
+            System.out.println("\nEnter birth date day: "); 
+            int birthDay = getInt();
+            String myDate = birthYear + "/" + birthMonth + "/" + birthDay;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+            java.util.Date date;
+			try {
+				date = sdf.parse(myDate);
+			} catch (ParseException e) {
+				System.out.println("Invalid Date");
+				return;
+			}
+            long millis = date.getTime();
+            Date birthdate = new Date(millis);
+            
             System.out.println("\nEnter ssn: ");
             int ssn = getInt();
             System.out.println("\nEnter current street: ");
@@ -185,10 +196,10 @@ public class ProjectInterface extends JFrame {
             // --------------------------------------
             System.out.println("\nEnter current state: ");
             String current_state = getString();
-            System.out.println("\nEnter current zip code ");
+            System.out.println("\nEnter current zip code: ");
             int current_zip = getInt();
-            System.out.println("\nEnter current phone number: ");
-            int current_phone = getInt();
+            System.out.println("\nEnter current phone number (No dashes, spaces, parenthesis, or country code): ");
+            String current_phone = getString();
             // -------------------------------------------
             System.out.println("\nEnter first name: ");
             String first_name = getString();
@@ -201,29 +212,29 @@ public class ProjectInterface extends JFrame {
             // ---------------------------------------------
             System.out.println("\nEnter permanent street: ");
             String permanent_street = getString();
-            System.out.println("\nEnter permanent city ");
+            System.out.println("\nEnter permanent city: ");
             String permanent_city = getString();
             System.out.println("\nEnter permanent state: ");
             String permanent_state = getString();
             System.out.println("\nEnter permanent zip code: ");
             int permanent_zip = getInt();
-            System.out.println("\nEnter permanent phone number ");
-            int permanent_phone = getInt();
-            System.out.println("\nEnter student's minor: ");
-            String minor = getString();
-            System.out.println("\nEnter student's major: ");
+            System.out.println("\nEnter permanent phone number (No dashes, spaces, parenthesis, or country code): ");
+            String permanent_phone = getString();
+            System.out.println("\nEnter student's major dept code: ");
             String major = getString();
+            System.out.println("\nEnter student's minor dept code: ");
+            String minor = getString();
 
             pstmt.setInt(1, n_number);
             pstmt.setString(2, degree);
             pstmt.setString(3, sex);
-            pstmt.setInt(4, birthdate);
+            pstmt.setDate(4, birthdate);
             pstmt.setInt(5, ssn);
             pstmt.setString(6, current_street);
             pstmt.setString(7, current_city);
             pstmt.setString(8, current_state);
             pstmt.setInt(9, current_zip);
-            pstmt.setInt(10, current_phone);
+            pstmt.setString(10, current_phone);
             pstmt.setString(11, first_name);
             pstmt.setString(12, middle_initial);
             pstmt.setString(13, last_name);
@@ -233,7 +244,7 @@ public class ProjectInterface extends JFrame {
             pstmt.setString(16, permanent_city);
             pstmt.setString(17, permanent_state);
             pstmt.setInt(18, permanent_zip);
-            pstmt.setInt(19, permanent_phone);
+            pstmt.setString(19, permanent_phone);
             pstmt.setString(20, minor);
             pstmt.setString(21, major);
 
@@ -260,16 +271,16 @@ public class ProjectInterface extends JFrame {
             String department_name = getString();
             System.out.println("\nEnter college: ");
             String college = getString();
-            System.out.println("\nEnter office number: ");
+            System.out.println("\nEnter office number (0-4 digits): ");
             int office_number = getInt();
-            System.out.println("\nEnter office phone: ");
-            int office_phone = getInt();
+            System.out.println("\nEnter office phone number (No dashes, spaces, parenthesis, or country code): ");
+            String office_phone = getString();
 
             pstmt.setString(1, code);
             pstmt.setString(2, department_name);
             pstmt.setString(3, college);
             pstmt.setInt(4, office_number);
-            pstmt.setInt(5, office_phone);
+            pstmt.setString(5, office_phone);
             int NumRows = pstmt.executeUpdate();
             System.out.println("\n" + NumRows + " row(s) inserted");
 
@@ -435,7 +446,7 @@ public class ProjectInterface extends JFrame {
 
     }
 
-    private static void addGrade() {
+    private static void addGrade() throws SQLException {
          DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         int grade;
         String course;
@@ -474,7 +485,7 @@ public class ProjectInterface extends JFrame {
 
     }
 
-    private static void getGradeReport() {
+    private static void getGradeReport() throws SQLException {
         int studentNnumber = -1;
 
         // Get Input
@@ -495,36 +506,107 @@ public class ProjectInterface extends JFrame {
         }
 
         System.out.println("Getting grade report for student n" + studentNnumber);
-        // TODO Implement me
+        
+        String q = "SELECT * from STUDENT " +
+                "where STUDENT.n_number = " + studentNnumber;
+        Statement stmt = rdsConnection.createStatement();
+        ResultSet rset = stmt.executeQuery(q);
 
-        try {
-            PreparedStatement statement = rdsConnection.prepareStatement("SELECT * FROM STUDENTS");
-            ResultSet res = statement.executeQuery();
+        System.out.println("\n");
 
-            ResultSetMetaData metadata = res.getMetaData();
-            int columnCount = metadata.getColumnCount();
+        while (rset.next()) {
+            String studentName = rset.getString("FIRST_NAME")  + " " + rset.getString("MIDDLE_INITIAL") + " " + rset.getString("LAST_NAME");
+            int nNumber = rset.getInt("N_NUMBER");
+            String degree = rset.getString("DEGREE");
+            String sex = rset.getString("SEX");
+            Date bdate = rset.getDate("BIRTHDATE");
+            int ssn = rset.getInt("SSN");
+            String currentAddress = rset.getString("CURRENT_STREET")  + ", " + rset.getString("CURRENT_CITY") + " " + rset.getString("CURRENT_STATE") + " " + rset.getString("CURRENT_ZIP");
+            String permanentAddress = rset.getString("PERMANENT_STREET")  + ", " + rset.getString("PERMANENT_CITY") + " " + rset.getString("PERMANENT_STATE") + " " + rset.getString("PERMANENT_ZIP");
+            String currentPhone = rset.getString("CURRENT_PHONE");
+            String permanentPhone = rset.getString("PERMANENT_PHONE");
+            String studentClass = rset.getString("STUDENT_CLASS");
+            String major = rset.getString("MAJOR");
+            String minor = rset.getString("MINOR");
+            
+            System.out.println("Information for student: N" + nNumber);
+            System.out.println("Name: " + studentName);
+            System.out.println("Birth Date: " + bdate);
+            System.out.println("Sex: " + sex);
+            System.out.println("SSN: " + ssn);
 
-            // Print column names
-            for (int i = 1; i <= columnCount; i++) {
-                System.out.print(metadata.getColumnName(i));
-                if (i != columnCount) {
-                    System.out.print("| ");
-                } else {
-                    System.out.println();
-                }
+            System.out.println("Current Phone: " + currentPhone);
+            System.out.println("Permanent Phone: " + permanentPhone);
+            System.out.println("Current Address: " + currentAddress);
+            System.out.println("Permanent Address: " + permanentAddress);
+
+            System.out.println("Degree: " + degree + " in " + major);
+            System.out.println("Minor: " + minor);
+            System.out.println("Class: " + studentClass);
+        } // while rset
+        
+        
+        String q2 = "SELECT * from ENROLLED_IN " +
+        		"LEFT JOIN COURSE " +
+        		"ON ENROLLED_IN.course = COURSE.course_number " +
+                "WHERE ENROLLED_IN.student = " + studentNnumber;
+        Statement stmt2 = rdsConnection.createStatement();
+        ResultSet rset2 = stmt2.executeQuery(q2);
+
+        System.out.println("\n");
+        
+        double GPAsum = 0;
+        double GPAnumValues = 0;
+        
+//      Course section | Letter grade | Grade Point
+//      GPA
+        while (rset2.next()) {
+            String course = rset2.getString("COURSE_NAME");
+            Float courseHours = rset2.getFloat("SEMESTER_HOURS");
+            int section = rset2.getInt("SECTION");
+
+            int sectionYear = rset2.getInt("YEAR");
+            String sectionSemester = rset2.getString("SEMESTER");
+            
+            String grade = rset2.getString("GRADE");
+            
+            double gradepoint = gradeToGPA(grade);
+            if(gradepoint >= 0) {
+            	GPAnumValues += courseHours;
+            	GPAsum += gradepoint * courseHours;
             }
-
-            // Print results
-            while (res.next()) {
-                String row = "";
-                for (int i = 1; i <= columnCount; i++) {
-                    row += res.getString(i) + ", ";
-                }
-                System.out.println(row);
-            }
-        } catch (SQLException e) {
-            // TODO: handle exception
-        }
+            
+            System.out.println("Course: " + course + " section " + section + ", Grade: " + grade + ", Semester: " + sectionSemester + " " + sectionYear);
+        } // while rset
+        
+        System.out.println("Student GPA: " + (GPAsum / GPAnumValues));
+    }
+    
+    private static double gradeToGPA(String grade) {
+    	switch (grade) {
+		case "A":
+			return 4.0;
+		case "A-":
+			return 3.7;
+		case "B+":
+			return 3.3;
+		case "B":
+			return 3.0;
+		case "B-":
+			return 2.7;
+		case "C+":
+			return 2.3;
+		case "C":
+			return 2.0;
+		case "D":
+			return 1.0;
+		case "F":
+			return 0.0;
+		case "FA":
+			return 0.0;
+		default:
+			return -1.0;
+		}
     }
 
     private static void getDepartmentCourses() throws SQLException {
@@ -593,7 +675,6 @@ public class ProjectInterface extends JFrame {
         }
 
         System.out.println("Getting course sections for instructor n" + instructorNnumber);
-        // TODO Implement me
         while (!in.nextLine().equals("q")) {
             String q = "select * from s.SECTION " +
                     "inner join i.INSTRUCTOR " +

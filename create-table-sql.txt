@@ -3,7 +3,7 @@ CREATE TABLE DEPARTMENT (
     department_name     VARCHAR(30),
     college             VARCHAR(50),
     office_number       INT         CHECK(office_number >= 0 AND office_number <= 9999),
-    office_phone        INT         CHECK(office_phone >= 0 AND office_phone <= 9999999999), 
+    office_phone        CHAR(10),
     PRIMARY KEY (code),
     UNIQUE(department_name)
 );
@@ -30,7 +30,7 @@ CREATE TABLE STUDENT (
     current_city        VARCHAR(30), 
     current_state       VARCHAR(13), 
     current_zip         INT             CHECK(current_zip >= 0 and current_zip <= 99999), 
-    current_phone       INT             CHECK(current_phone >= 0 AND current_phone <= 9999999999), 
+    current_phone       CHAR(10),
     first_name          VARCHAR(30), 
     middle_initial      CHAR(1), 
     last_name           VARCHAR(30)     NOT NULL, 
@@ -39,7 +39,7 @@ CREATE TABLE STUDENT (
     permanent_city      VARCHAR(30)     NOT NULL, 
     permanent_state     VARCHAR(13)     NOT NULL, 
     permanent_zip       INT             NOT NULL    CHECK(permanent_zip >= 0 and permanent_zip <= 99999), 
-    permanent_phone     INT             CHECK(permanent_phone >= 0 AND permanent_phone <= 9999999999), 
+    permanent_phone     CHAR(10),
     minor               VARCHAR(4),
     major               VARCHAR(4),
     PRIMARY KEY (n_number), 
