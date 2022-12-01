@@ -21,7 +21,7 @@ CREATE TABLE COURSE (
 );
 
 CREATE TABLE STUDENT ( 
-    n_number            INT             CHECK(n_number >= 0 AND n_number <= 99999999) NOT NULL, 
+    n_number            VARCHAR(9)             CHECK(n_number >= 0 AND n_number <= 99999999) NOT NULL, 
     degree              VARCHAR(15), 
     sex                 VARCHAR(6), 
     birthdate           DATE, 
@@ -51,7 +51,7 @@ CREATE TABLE STUDENT (
 );
 
 CREATE TABLE INSTRUCTOR ( 
-    n_number            INT             CHECK(n_number >= 0 AND n_number <= 99999999) NOT NULL, 
+    n_number            VARCHAR(9)             CHECK(n_number >= 0 AND n_number <= 99999999) NOT NULL, 
     ssn                 INT             CHECK(ssn >= 0 AND ssn <= 999999999), 
     instructor_name     VARCHAR(45),
     age                 int             CHECK(age >= 16 AND age <= 150),
@@ -70,7 +70,7 @@ CREATE TABLE SECTION (
     course          VARCHAR(7) NOT NULL,
     section_year    INT             CHECK(section_year >= 1969) NOT NULL,
     semester        VARCHAR(8) NOT NULL,
-    instructor      int,
+    instructor      VARCHAR(9),
     PRIMARY KEY (section_number, course, section_year, semester),
     FOREIGN KEY (instructor) REFERENCES INSTRUCTOR(n_number) 
         ON DELETE SET NULL,
@@ -79,7 +79,7 @@ CREATE TABLE SECTION (
 );
 
 CREATE TABLE ENROLLED_IN ( 
-    student         INT NOT NULL,
+    student         VARCHAR(9) NOT NULL,
     course          VARCHAR(7) NOT NULL,
     section         INT NOT NULL,
     section_year    INT             CHECK(section_year >= 1969),
