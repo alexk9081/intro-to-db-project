@@ -308,9 +308,9 @@ public class ProjectInterface extends JFrame {
             System.out.println("\nEnter age: ");
             int age = getInt();
             System.out.println("\nEnter personal phone number: ");
-            int personal_phone = getInt();
+            String personal_phone = getString();
             System.out.println("\nEnter office phone number: ");
-            int office_phone = getInt();
+            String office_phone = getString();
             System.out.println("\nEnter address: ");
             String address = getString();
             System.out.println("\nEnter department: ");
@@ -320,8 +320,8 @@ public class ProjectInterface extends JFrame {
             pstmt.setInt(2, ssn);
             pstmt.setString(3, instructor_name);
             pstmt.setInt(4, age);
-            pstmt.setInt(5, personal_phone);
-            pstmt.setInt(6, office_phone);
+            pstmt.setString(5, personal_phone);
+            pstmt.setString(6, office_phone);
             pstmt.setString(7, address);
             pstmt.setString(8, department);
 
