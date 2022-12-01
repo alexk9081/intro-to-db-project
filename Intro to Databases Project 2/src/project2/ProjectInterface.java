@@ -430,8 +430,8 @@ public class ProjectInterface extends JFrame {
 
             pstmt.setInt(1, student);
             pstmt.setString(2, course);
-            pstmt.setInt(3, section_year);
-            pstmt.setInt(4, section);
+            pstmt.setInt(3, section);
+            pstmt.setInt(4, section_year);
             pstmt.setString(5, semester);
             pstmt.setString(6, grade);
 
@@ -448,7 +448,7 @@ public class ProjectInterface extends JFrame {
 
     private static void addGrade() throws SQLException {
          DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-        int grade;
+        String grade;
         String course;
         int section;
         int student;
@@ -459,7 +459,7 @@ public class ProjectInterface extends JFrame {
                 System.out.print("Enter student number: ");
                 student = getInt();
                 System.out.print("Enter grade: ");
-                grade = getInt();
+                grade = getString();
                 System.out.print("Enter course: ");
                 course = getString();
                 System.out.print("Enter section: ");
