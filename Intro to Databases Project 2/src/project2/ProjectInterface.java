@@ -353,7 +353,7 @@ public class ProjectInterface extends JFrame {
             System.out.println("\nEnter course name: ");
             String course_name = getString();
             System.out.println("\nEnter semester hours: ");
-            int semester_hours = getInt();
+            float semester_hours = getInt();
             System.out.println("\nEnter department: ");
             String department = getString();
 
@@ -361,7 +361,7 @@ public class ProjectInterface extends JFrame {
             pstmt.setString(2, description);
             pstmt.setInt(3, course_level);
             pstmt.setString(4, course_name);
-            pstmt.setInt(5, semester_hours);
+            pstmt.setFloat(5, semester_hours);
             pstmt.setString(6, department);
             int NumRows = pstmt.executeUpdate();
             System.out.println("\n" + NumRows + " row(s) inserted");
@@ -513,13 +513,9 @@ public class ProjectInterface extends JFrame {
         ResultSet rset = stmt.executeQuery(q);
 
         System.out.println("\n");
-        
+
         while (rset.next()) {
-        	String mIString = rset.getString("MIDDLE_INITIAL");
-        	if (mIString == null || mIString.equals("null")) {
-        		mIString = "";
-        	}
-            String studentName = rset.getString("FIRST_NAME")  + " " + mIString + " " + rset.getString("LAST_NAME");
+            String studentName = rset.getString("FIRST_NAME")  + " " + rset.getString("MIDDLE_INITIAL") + " " + rset.getString("LAST_NAME");
             int nNumber = rset.getInt("N_NUMBER");
             String degree = rset.getString("DEGREE");
             String sex = rset.getString("SEX");
@@ -569,7 +565,7 @@ public class ProjectInterface extends JFrame {
             Float courseHours = rset2.getFloat("SEMESTER_HOURS");
             int section = rset2.getInt("SECTION");
 
-            int sectionYear = rset2.getInt("YEAR");
+            int sectionYear = rset2.getInt("SECTION_YEAR");
             String sectionSemester = rset2.getString("SEMESTER");
             
             String grade = rset2.getString("GRADE");
