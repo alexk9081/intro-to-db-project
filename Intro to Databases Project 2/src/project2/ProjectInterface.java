@@ -464,25 +464,21 @@ public class ProjectInterface extends JFrame {
                 course = getString();
                 System.out.print("Enter section: ");
                 section = getInt();
-                String q = "update ENROLLED_IN " + 
-                            "set grade = " + grade +
-                            "where course = " + course + " or section = " + section + " and student = " + student;
+                String query = "UPDATE enrolled_in SET grade = " + grade + "WHERE student = " + student + " AND course =" + course + " AND section = " + section;
 
-        PreparedStatement pstmt = rdsConnection.prepareStatement(q);
-
-        int NumRows = pstmt.executeUpdate();
-            System.out.println("\n" + NumRows + " row(s) inserted");
-
-
-            ResultSet rset = pstmt.executeQuery();
-
-            System.out.println("\nHit 0 for exit, " +
-            "or enter any other number for another insert: ");
-                done = getInt();
-            } 
-            
-            System.out.println("\n");
-
+                // create a PreparedStatement object
+                PreparedStatement statement = rdsConnection.prepareStatement(query);
+              
+                // set the values for the placeholders in the query
+                statement.setString(1, grade);
+                statement.setInt(2, student);
+                statement.setString(3, course);
+                statement.setInt(4, section);
+                
+              
+                // execute the query
+                statement.executeUpdate();
+        }
     }
 
     private static void getGradeReport() throws SQLException {
